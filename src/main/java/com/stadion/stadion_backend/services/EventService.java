@@ -31,7 +31,7 @@ public class EventService {
         Pageable pageable = PageRequest.of(page, itemsPerPage);
 
         Page<Event> events = eventRepository.findAll(pageable);
-        return events.stream().map(eventMapper::eventToEventResponse).toList();
+        return events.map(eventMapper::eventToEventResponse).toList();
     }
 
     public EventResponse findEventById(String id) {
