@@ -27,6 +27,10 @@ public class Event {
     private EventCategory category;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private String country;
+    private String state;
+    private String city;
+    private String address;
     @CreationTimestamp
     private LocalDateTime createdAt;
 }

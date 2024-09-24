@@ -15,6 +15,10 @@ public class EventResponse {
     private String description;
     private String imageUrl;
     private String redirectUrl;
+    private String country;
+    private String state;
+    private String city;
+    private String address;
     private EventCategory category;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
