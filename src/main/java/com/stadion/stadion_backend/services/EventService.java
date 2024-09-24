@@ -5,7 +5,10 @@ import com.stadion.stadion_backend.domains.entities.Event;
 import com.stadion.stadion_backend.exceptions.EventNotFoundException;
 import com.stadion.stadion_backend.mappers.EventMapper;
 import com.stadion.stadion_backend.repositories.EventRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
@@ -23,8 +26,11 @@ public class EventService {
         return eventMapper.eventToEventResponse(newEvent);
     }
 
-    public List<EventResponse> findEvents() {
-        List<Event> events = eventRepository.findAll();
+    public List<EventResponse> findEvents(Integer page) {
+        int itemsPerPage = 30;
+        Pageable pageable = PageRequest.of(page, itemsPerPage);
+
+        Page<Event> events = eventRepository.findAll(pageable);
         return events.stream().map(eventMapper::eventToEventResponse).toList();
     }
 

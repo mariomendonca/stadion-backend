@@ -21,8 +21,8 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EventResponse>> getEvents() {
-        return ResponseEntity.ok(eventService.findEvents());
+    public ResponseEntity<List<EventResponse>> getEvents(@RequestParam Integer page) {
+        return ResponseEntity.ok(eventService.findEvents(page));
     }
 
     @GetMapping("/{id}")
