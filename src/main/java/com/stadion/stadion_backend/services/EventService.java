@@ -2,15 +2,16 @@ package com.stadion.stadion_backend.services;
 
 import com.stadion.stadion_backend.domains.dtos.event.EventResponse;
 import com.stadion.stadion_backend.domains.entities.Event;
+import com.stadion.stadion_backend.enums.EventCategory;
 import com.stadion.stadion_backend.exceptions.EventNotFoundException;
 import com.stadion.stadion_backend.mappers.EventMapper;
 import com.stadion.stadion_backend.repositories.EventRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,12 +27,19 @@ public class EventService {
         return eventMapper.eventToEventResponse(newEvent);
     }
 
-    public List<EventResponse> findEvents(Integer page) {
-        int itemsPerPage = 30;
+    public List<EventResponse> findEvents(
+            List<String> states,
+            List<EventCategory> categories,
+            String name,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Integer page
+    ) {
+        int itemsPerPage = 10;
         Pageable pageable = PageRequest.of(page, itemsPerPage);
 
-        Page<Event> events = eventRepository.findAll(pageable);
-        return events.map(eventMapper::eventToEventResponse).toList();
+        List<Event> events = eventRepository.findByFilter(states, categories, name, startDate, endDate, pageable);
+        return events.stream().map(eventMapper::eventToEventResponse).toList();
     }
 
     public EventResponse findEventById(String id) {
