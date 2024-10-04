@@ -12,6 +12,7 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class EventRepositoryImpl implements CustomEventRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Event> findByFilter(List<String> states, List<EventCategory> categories, String name, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+    public List<Event> findByFilter(List<String> states, List<EventCategory> categories, String name, LocalDate startDate, LocalDate endDate, Pageable pageable) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Event> criteriaQuery = criteriaBuilder.createQuery(Event.class);
         Root<Event> root = criteriaQuery.from(Event.class);
@@ -35,7 +36,15 @@ public class EventRepositoryImpl implements CustomEventRepository {
         return typedQuery.getResultList();
     }
 
-    Predicate buildFinalPredicate(CriteriaBuilder criteriaBuilder, Root<Event> root, List<String> states, List<EventCategory> categories, String name, LocalDateTime startDate, LocalDateTime endDate) {
+    Predicate buildFinalPredicate(
+            CriteriaBuilder criteriaBuilder,
+            Root<Event> root,
+            List<String> states,
+            List<EventCategory> categories,
+            String name,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
         List<Predicate> predicates = new ArrayList<>();
 
         if (Objects.nonNull(name)) {
@@ -48,6 +57,18 @@ public class EventRepositoryImpl implements CustomEventRepository {
 
         if (Objects.nonNull(categories) && !categories.isEmpty()) {
             predicates.add(root.get("category").in(categories));
+        }
+
+        if (Objects.nonNull(startDate) && Objects.isNull(endDate)) {
+            predicates.add(criteriaBuilder.equal(criteriaBuilder.function("date", LocalDate.class, root.get("startDate")), startDate));
+        }
+
+        if (Objects.nonNull(startDate) && Objects.nonNull(endDate)) {
+            predicates.add(criteriaBuilder.between(
+                    criteriaBuilder.function("date", LocalDate.class, root.get("startDate")),
+                    startDate,
+                    endDate
+            ));
         }
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
