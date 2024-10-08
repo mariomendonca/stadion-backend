@@ -1,15 +1,14 @@
 package com.stadion.stadion_backend.controllers;
 
+import com.stadion.stadion_backend.domains.dtos.event.EventFilterRequest;
 import com.stadion.stadion_backend.domains.dtos.event.EventResponse;
 import com.stadion.stadion_backend.domains.entities.Event;
-import com.stadion.stadion_backend.enums.EventCategory;
 import com.stadion.stadion_backend.services.EventService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -24,22 +23,8 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EventResponse>> getEvents(
-            @RequestParam(required = false) List<String> states,
-            @RequestParam(required = false) List<EventCategory> categories,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) LocalDate startDate,
-            @RequestParam(required = false) LocalDate endDate,
-            @RequestParam Integer page
-    ) {
-        return ResponseEntity.ok(eventService.findEvents(
-                states,
-                categories,
-                name,
-                startDate,
-                endDate,
-                page
-        ));
+    public ResponseEntity<List<EventResponse>> getEvents(EventFilterRequest eventFilterRequest) {
+        return ResponseEntity.ok(eventService.findEvents(eventFilterRequest));
     }
 
     @GetMapping("/{id}")
