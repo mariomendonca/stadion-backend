@@ -24,7 +24,7 @@ public class EventRepositoryImpl implements CustomEventRepository {
     private EntityManager entityManager;
 
     public List<Event> findByFilter(EventFilterRequest eventFilterRequest) {
-        Pageable pageable = PageRequest.of(eventFilterRequest.getPage(), eventFilterRequest.getItemsPerPage());
+
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Event> criteriaQuery = criteriaBuilder.createQuery(Event.class);
@@ -33,9 +33,18 @@ public class EventRepositoryImpl implements CustomEventRepository {
         Predicate finalPredicate = buildFinalPredicate(criteriaBuilder, root, eventFilterRequest);
         criteriaQuery.where(finalPredicate);
         TypedQuery<Event> typedQuery = entityManager.createQuery(criteriaQuery);
+
+        if (Objects.nonNull(eventFilterRequest.getPage()) && Objects.nonNull(eventFilterRequest.getItemsPerPage())) {
+            buildPagination(eventFilterRequest.getPage(), eventFilterRequest.getItemsPerPage(), typedQuery);
+        }
+
+        return typedQuery.getResultList();
+    }
+
+    private void buildPagination(int page, int itemsPerPage, TypedQuery<Event> typedQuery) {
+        Pageable pageable = PageRequest.of(page, itemsPerPage);
         typedQuery.setFirstResult((int) pageable.getOffset());
         typedQuery.setMaxResults(pageable.getPageSize());
-        return typedQuery.getResultList();
     }
 
     Predicate buildFinalPredicate(

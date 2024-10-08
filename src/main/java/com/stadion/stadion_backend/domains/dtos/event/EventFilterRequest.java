@@ -17,5 +17,5 @@ public class EventFilterRequest {
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer page;
-    private int itemsPerPage;
+    private Integer itemsPerPage;
 }
