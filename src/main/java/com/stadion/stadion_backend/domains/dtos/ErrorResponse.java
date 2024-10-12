@@ -1,4 +1,4 @@
-package com.stadion.stadion_backend.exceptions;
+package com.stadion.stadion_backend.domains.dtos;
 
 import lombok.Builder;
 import lombok.Getter;

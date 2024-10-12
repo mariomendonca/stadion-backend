@@ -1,5 +1,6 @@
 package com.stadion.stadion_backend.exceptions;
 
+import com.stadion.stadion_backend.domains.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
