@@ -1,5 +1,6 @@
 package com.stadion.stadion_backend.controllers;
 
+import com.stadion.stadion_backend.domains.dtos.user.UserLoginRequest;
 import com.stadion.stadion_backend.domains.dtos.user.UserResponse;
 import com.stadion.stadion_backend.domains.entities.User;
 import com.stadion.stadion_backend.services.UserService;
@@ -19,5 +20,10 @@ public class UserController {
     @PostMapping
     ResponseEntity<UserResponse> createUser(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
+    }
+
+    @PostMapping("/login")
+    ResponseEntity<UserResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.login(userLoginRequest));
     }
 }
