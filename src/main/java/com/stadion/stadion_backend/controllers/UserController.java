@@ -7,10 +7,10 @@ import com.stadion.stadion_backend.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -25,5 +25,11 @@ public class UserController {
     @PostMapping("/login")
     ResponseEntity<UserResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.login(userLoginRequest));
+    }
+
+    @PostMapping("/{id}/upload-image")
+    public ResponseEntity<String> uploadImage(@PathVariable String id, @RequestParam("file") MultipartFile file) throws IOException {
+        userService.uploadImage(file, id);
+        return ResponseEntity.ok("Image uploaded successfully");
     }
 }

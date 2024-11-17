@@ -8,7 +8,9 @@ import com.stadion.stadion_backend.mappers.EventMapper;
 import com.stadion.stadion_backend.repositories.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class EventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final FileUploadService fileUploadService;
 
     public EventResponse createEvent(Event event) {
         Event newEvent = eventRepository.save(event);
@@ -36,5 +39,21 @@ public class EventService {
             throw new EventNotFoundException("Event with id " + id + " was not found");
         }
         return eventMapper.eventToEventResponse(event.get());
+    }
+
+    public void uploadImage(MultipartFile file, String id) throws IOException {
+        Optional<Event> event = eventRepository.findById(UUID.fromString(id));
+
+        if (event.isEmpty()) {
+            throw new EventNotFoundException("Event with id " + id + " was not found");
+        }
+
+
+
+        String fileName = "events/" + file.getName() + System.currentTimeMillis();
+        String imageUrl = fileUploadService.uploadImage(file, fileName);
+        event.get().setImageUrl(imageUrl);
+
+        eventRepository.save(event.get());
     }
 }
