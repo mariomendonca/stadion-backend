@@ -38,7 +38,7 @@ public class UserService {
     }
 
     public UserResponse login(UserLoginRequest userLoginRequest) {
-        Optional<User> user = userRepository.findByUsernameOrEmail(userLoginRequest.getUsername(), userLoginRequest.getEmail());
+        Optional<User> user = userRepository.findByUsernameOrEmail(userLoginRequest.getEmail(), userLoginRequest.getEmail());
         if (user.isEmpty()) {
             throw new UserNotFoundException("User not found");
         }
