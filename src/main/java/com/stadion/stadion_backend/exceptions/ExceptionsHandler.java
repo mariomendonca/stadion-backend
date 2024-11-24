@@ -36,6 +36,15 @@ public class ExceptionsHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
+    @ExceptionHandler(EmailFailedException.class)
+    public ResponseEntity<ErrorResponse> handleEmailFailedException(EmailFailedException exception) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+            .message(exception.getMessage())
+            .build();
+
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException exception) {
