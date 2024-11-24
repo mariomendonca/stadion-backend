@@ -2,12 +2,8 @@ package com.stadion.stadion_backend.services;
 
 import com.stadion.stadion_backend.domains.dtos.user.UserLoginRequest;
 import com.stadion.stadion_backend.domains.dtos.user.UserResponse;
-import com.stadion.stadion_backend.domains.entities.Event;
 import com.stadion.stadion_backend.domains.entities.User;
-import com.stadion.stadion_backend.exceptions.EventNotFoundException;
-import com.stadion.stadion_backend.exceptions.UserAlreadyExistsException;
-import com.stadion.stadion_backend.exceptions.UserNotFoundException;
-import com.stadion.stadion_backend.exceptions.WrongPasswordException;
+import com.stadion.stadion_backend.exceptions.*;
 import com.stadion.stadion_backend.mappers.UserMapper;
 import com.stadion.stadion_backend.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -33,6 +29,7 @@ public class UserService {
             throw new UserAlreadyExistsException("User with this username or email already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setIsActive(Boolean.FALSE);
         userRepository.save(user);
         return userMapper.userToUserResponse(user);
     }
@@ -43,11 +40,14 @@ public class UserService {
             throw new UserNotFoundException("User not found");
         }
 
+        if (Boolean.FALSE.equals(user.get().getIsActive())) {
+            throw new UserNotActiveException("User is not active");
+        }
+
         boolean isPasswordCorrect = passwordEncoder.matches(userLoginRequest.getPassword(), user.get().getPassword());
         if (!isPasswordCorrect) {
             throw new WrongPasswordException("Wrong password");
         }
-
 
         return userMapper.userToUserResponse(user.get());
     }
@@ -56,15 +56,24 @@ public class UserService {
         Optional<User> user = userRepository.findById(UUID.fromString(id));
 
         if (user.isEmpty()) {
-            throw new EventNotFoundException("Event with id " + id + " was not found");
+            throw new UserNotFoundException("User with id " + id + " was not found");
         }
 
-
-
-        String fileName = "events/" + file.getName() + System.currentTimeMillis();
+        String fileName = "users/" + file.getName() + System.currentTimeMillis();
         String imageUrl = fileUploadService.uploadImage(file, fileName);
         user.get().setImageUrl(imageUrl);
 
+        userRepository.save(user.get());
+    }
+
+    public void activeUser(String id) {
+        Optional<User> user = userRepository.findById(UUID.fromString(id));
+
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User with id " + id + " was not found");
+        }
+
+        user.get().setIsActive(Boolean.TRUE);
         userRepository.save(user.get());
     }
 }

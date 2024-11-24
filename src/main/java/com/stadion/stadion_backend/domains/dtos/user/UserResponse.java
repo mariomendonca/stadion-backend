@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -18,5 +19,7 @@ public class UserResponse {
     private String username;
     private String email;
     private String imageUrl;
+    private Boolean isActive;
+    private LocalDate bornDate;
     private LocalDateTime createdAt;
 }

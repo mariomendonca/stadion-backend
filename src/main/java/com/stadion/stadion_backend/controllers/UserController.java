@@ -24,12 +24,18 @@ public class UserController {
 
     @PostMapping("/login")
     ResponseEntity<UserResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.login(userLoginRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.login(userLoginRequest));
     }
 
     @PostMapping("/{id}/upload-image")
     public ResponseEntity<String> uploadImage(@PathVariable String id, @RequestParam("file") MultipartFile file) throws IOException {
         userService.uploadImage(file, id);
         return ResponseEntity.ok("Image uploaded successfully");
+    }
+
+    @PostMapping("/{id}/active")
+    public ResponseEntity<Void> activeUser(@PathVariable String id) {
+        userService.activeUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
