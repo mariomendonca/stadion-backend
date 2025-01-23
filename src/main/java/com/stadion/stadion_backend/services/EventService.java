@@ -48,8 +48,6 @@ public class EventService {
             throw new EventNotFoundException("Event with id " + id + " was not found");
         }
 
-
-
         String fileName = "events/" + file.getName() + System.currentTimeMillis();
         String imageUrl = fileUploadService.uploadImage(file, fileName);
         event.get().setImageUrl(imageUrl);
