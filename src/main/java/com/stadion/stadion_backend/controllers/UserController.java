@@ -33,7 +33,7 @@ public class UserController {
         return ResponseEntity.ok("Image uploaded successfully");
     }
 
-    @PostMapping("/{id}/active")
+    @PatchMapping("/{id}/active")
     public ResponseEntity<Void> activeUser(@PathVariable String id) {
         userService.activeUser(id);
         return ResponseEntity.noContent().build();

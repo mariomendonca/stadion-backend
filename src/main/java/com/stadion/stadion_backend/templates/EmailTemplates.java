@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 public class EmailTemplates {
     public static String createAccountEmailTemplate(String name, String id) {
         return "<p>Olá " + name + ", Clique no link abaixo para ativar sua conta:</p>"
-            + "<a href=\"http://localhost:8080/v1/users/"+ id + "/active\">Ativar conta</a>";
+            + "<a href=\"http://localhost:5173/auth/activate/"+ id + "\">Ativar conta</a>";
     }
 
     public static String forgotPasswordTemplate(String name, String id) {
