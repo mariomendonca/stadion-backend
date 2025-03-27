@@ -32,6 +32,8 @@ public class EventRepositoryImpl implements CustomEventRepository {
 
         Predicate finalPredicate = buildFinalPredicate(criteriaBuilder, root, eventFilterRequest);
         criteriaQuery.where(finalPredicate);
+        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("startDate")));
+
         TypedQuery<Event> typedQuery = entityManager.createQuery(criteriaQuery);
 
         if (Objects.nonNull(eventFilterRequest.getPage()) && Objects.nonNull(eventFilterRequest.getItemsPerPage())) {
